@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Wifi in deiner Nähe</ion-title>
+
+    <ion-buttons margin-right end>
+      <button ion-button (click)="retrieveLocation()">
+        <ion-icon name="locate"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <p>Die nächsten Stuttgarter Wifi Spots in deiner Nähe sind...</p>
+
+  <p *ngIf="unknownLocation">
+    Dein Standort ist nicht bekannt, sorry!
+  </p>
+
+  <ion-list>
+
+  </ion-list>
+</ion-content>
