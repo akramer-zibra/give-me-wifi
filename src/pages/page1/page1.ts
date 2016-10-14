@@ -81,9 +81,12 @@ export class Page1 {
     console.debug(location);
     // DEBUG
 
+    // TODO: Convert lat-lng to coords
+
     // Use data provider to retrieve Wifi locations
     // NOTICE: Returns an Observable
-    this.stuttgartMapsData.getWifiLocations(location)
+    // TODO: use converted geolocation
+    this.stuttgartMapsData.getWifiLocations({'x': 3513184, 'y': 5404218})
                           .subscribe((response) => {
 
       // DEBUG

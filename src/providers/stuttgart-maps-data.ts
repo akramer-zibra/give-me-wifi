@@ -6,6 +6,16 @@ import "rxjs/Rx";
 export class StuttgartMapsData {
 
   /**
+   * Data provider settings
+   * @type {{endpointUrl: string, boxSizeHeightPts: number, boxSizeWidthPts: number}}
+   */
+  private settings : Object = {
+    endpointUrl : "http://gis6.stuttgart.de/atlasfx/spring/rest/MapServer/6369/query",
+    boxSizeWidthPts: 2000,
+    boxSizeHeightPts: 2000
+  }
+
+  /**
    * Constructor method
    * @param http
    */
@@ -14,37 +24,34 @@ export class StuttgartMapsData {
   /**
    * Method uses http client to ask stuttgart maps server for wifi locations
    *
-   * @param location
+   * @param coords
    */
-  getWifiLocations(location: Object): Observable<Response> {
+  getWifiLocations(coords: Object): Observable<Response> {
 
     // DEBUG
     console.debug("Call: getWifiLocations");
-    console.debug(location);
+    console.debug(coords);
     // DEBUG
+
+    // Calculate border box with configurable point-width
+    let xMin = coords['x'] - (0.5 * this.settings['boxSizeWidthPts']);
+    let xMax = coords['x'] + (0.5 * this.settings['boxSizeWidthPts']);
+    let yMin = coords['y'] - (0.5 * this.settings['boxSizeHeightPts']);
+    let yMax = coords['y'] + (0.5 * this.settings['boxSizeHeightPts']);
 
     // Previously stringify geometry
-    let paramGeometry = JSON.stringify({"xmin":3509921.872788079,"ymin":5402207.854838709,"xmax":3513837.7139530946,"ymax":5406103.852214037,"spatialReference":{"wkid":31467}});
+    let paramGeometry = JSON.stringify({"xmin": xMin,"ymin": yMin,"xmax": xMax,"ymax": yMax,"spatialReference":{"wkid":31467}});
+    let encodedParamGeometry = encodeURIComponent(paramGeometry);
 
-    // Build API post request with params
-    let body = encodeURIComponent({f: "json",
-                               geometryType: "esriGeometryEnvelope",
-                               returnGeometry: true,
-                               outSR: 31467,
-                               inSR: 31467,
-                               spatialRel: "esriSpatialRelContains",
-                               geometry: paramGeometry});
+    // ...and append encoded json object to param string
+    var bodyParamString = 'f=json&geometryType=esriGeometryEnvelope&returnGeometry=true&outSR=31467&inSR=31467&spatialRel=esriSpatialRelContains&geometry=' + encodedParamGeometry;
 
-    // DEBUG
-    console.debug(body);
-    // DEBUG
-
+    // Configure request headers
     let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
     let options = new RequestOptions({ headers: headers });
 
     // Do POST request and return an Observable
-    // TODO: http://gis6.stuttgart.de/atlasfx/spring/rest/MapServer/6369/query
-    return this.http.post("/stuttgart-maps-api", body, options)
+    return this.http.post(this.settings['endpointUrl'], bodyParamString, options)
                     .map((res: Response) => res.json())
                     .catch(this.handleError);
   }
