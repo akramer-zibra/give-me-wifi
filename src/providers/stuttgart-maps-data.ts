@@ -43,6 +43,7 @@ export class StuttgartMapsData {
     let options = new RequestOptions({ headers: headers });
 
     // Do POST request and return an Observable
+    // TODO: http://gis6.stuttgart.de/atlasfx/spring/rest/MapServer/6369/query
     return this.http.post("/stuttgart-maps-api", body, options)
                     .map((res: Response) => res.json())
                     .catch(this.handleError);
