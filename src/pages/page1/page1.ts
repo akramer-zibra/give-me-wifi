@@ -5,6 +5,7 @@ import { NavController, Events } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
 
 import { StuttgartMapsData } from '../../providers/stuttgart-maps-data';
+import { StuttgartMapsCoordinatesCalculator } from '../../services/stuttgart-maps-coordinates-calculator';
 
 @Component({
   selector: 'page-page1',
@@ -23,10 +24,12 @@ export class Page1 {
    * @param navCtrl
    * @param events
    * @param stuttgartMapsData
+   * @param stuttgartMapsCoordinatesCalculator
    */
   constructor(public navCtrl: NavController,
               private events: Events,
-              private stuttgartMapsData: StuttgartMapsData) {
+              private stuttgartMapsData: StuttgartMapsData,
+              private stuttgartMapsCoordinatesCalculator: StuttgartMapsCoordinatesCalculator) {
 
     // Configure event listeners
     events.subscribe("location:retrieved", this.applyLocation.bind(this));
@@ -81,7 +84,8 @@ export class Page1 {
     console.debug(location);
     // DEBUG
 
-    // TODO: Convert lat-lng to coords
+    // Convert lat-lng to coords
+    let coords = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
 
     // Use data provider to retrieve Wifi locations
     // NOTICE: Returns an Observable

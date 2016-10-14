@@ -5,6 +5,7 @@ import { Page1 } from '../pages/page1/page1';
 import { Page2 } from '../pages/page2/page2';
 
 import { StuttgartMapsData } from '../providers/stuttgart-maps-data';
+import { StuttgartMapsCoordinatesCalculator } from '../services/stuttgart-maps-coordinates-calculator';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,6 @@ import { StuttgartMapsData } from '../providers/stuttgart-maps-data';
     Page1,
     Page2
   ],
-  providers: [StuttgartMapsData]
+  providers: [StuttgartMapsData, StuttgartMapsCoordinatesCalculator]
 })
 export class AppModule {}
