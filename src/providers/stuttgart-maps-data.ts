@@ -1,7 +1,8 @@
+import "rxjs/Rx";
 import {Injectable} from "@angular/core";
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
-import "rxjs/Rx";
 import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coordinates-calculator";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class StuttgartMapsData {
@@ -14,7 +15,16 @@ export class StuttgartMapsData {
     endpointUrl : "http://gis6.stuttgart.de/atlasfx/spring/rest/MapServer/6369/query",
     boxSizeWidthPts: 2000,
     boxSizeHeightPts: 2000
-  }
+  };
+
+  /**
+   * Variable with constants
+   * @type {RegExp}
+   * @see http://stackoverflow.com/q/1500260/2145395
+   */
+  private constants : Object = {
+    LINK_DETECTION_REGEX : /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\s+|$)/gi
+  };
 
   /**
    * Constructor method
@@ -29,15 +39,10 @@ export class StuttgartMapsData {
    *
    * @param location
    */
-  getWifiLocations(location: Object): Observable<Response> {
+  retrieveWifiLocations(location: Object): Observable<Response> {
 
     // Convert geolocation to coords
     let coords: Object = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
-
-    // DEBUG
-    console.debug("Call: getWifiLocations");
-    console.debug(coords);
-    // DEBUG
 
     // Calculate border box with configurable point-width
     let xMin = coords['x'] - (0.5 * this.settings['boxSizeWidthPts']);
@@ -63,38 +68,37 @@ export class StuttgartMapsData {
   }
 
   /**
-   * TODO: Method retrieves wifi location details from Stuttgart Maps server
-   * @param itemId
-   */
-  getWifiLocationDetails(itemId: Number): String {
-
-    return "Details";
-  }
-
-  /**
    * Method extracts wifi locations from received api response
    * @param response
-   * @type Array
+   * @type {Object}
    */
-  extractWifiLocations(response: Response): Array {
+  extractWifiLocations(response: Response): Object {
 
     // Convert received response into a JSON object
     let responseJson = response.json();
 
-    // Initialize empty objects collection
-    var wifiLocationObjects = [];
+    // Initialize empty objects collection with index on itemId
+    var wifiLocationObjects = {};
 
-    // TODO: Extract wifi location coords
+    // Extract encapsulated wifi location from response message
     for(let wifiLocationIdx in responseJson['features']) {
+
+      // TODO: refactor to event triggered procession
+      // ...convert coords to geolocation
+      // ...retrieve detailed information about the location
 
       // Convert coords to geolocation
       let location = this.stuttgartMapsCoordinatesCalculator.convertCoordsToGeolocation(responseJson['features'][wifiLocationIdx]['geometry']);
 
+      // Extract location identifier
+      let wifiLocationId = responseJson['features'][wifiLocationIdx]['attributes']['id'];
+
       // Copy wifi location data to result collection
-      wifiLocationObjects.push({
+      wifiLocationObjects[wifiLocationId] = {
         'attributes': responseJson['features'][wifiLocationIdx]['attributes'],
+        'geometry': responseJson['features'][wifiLocationIdx]['geometry'],
         'location': location
-      });
+      };
     }
 
     //
@@ -102,10 +106,52 @@ export class StuttgartMapsData {
   }
 
   /**
-   * TODO: Method gets wifi website item link from Stuttgart Maps server
-   * @param locationId
+   * TODO: Method converts retrieved Wifi location coords to geolocation
    */
-  getWifiWebsiteItemLink(locationId: Number): String {}
+  processWifiLocationCoordsConvert() {}
+
+  /**
+   * TODO: Method retrieves detailed information about a certain Wifi location
+   */
+  processWifiLocationDetailRetrieve() {}
+
+  /**
+   * Method retrieves wifi location details from Stuttgart Maps server
+   * @param wifiLocationId
+   * @type {String}
+   */
+  retrieveWifiLocationDetails(wifiLocationId: Number): Observable {
+
+    // http://gis6.stuttgart.de/atlasfx/spring/rest/InfoBubble/6369/12668
+    return this.http.get('http://gis6.stuttgart.de/atlasfx/spring/rest/InfoBubble/6369/'+ wifiLocationId)
+                   .map((res: Response) => this.extractWifiLocationDetails(res))
+                   .catch(this.handleError);
+  }
+
+  /**
+   * Method extracts Wifi Location details from the given response object
+   * @param response
+   */
+  extractWifiLocationDetails(response: Response): Object {
+
+    // Use response object as JSON object
+    let responseJson = response.json();
+
+    // Extract interesting data into new object
+    let details = {
+      'name': responseJson['body'][1]['data'],
+      'street': responseJson['body'][2]['data'],
+      'postalcode': responseJson['body'][3]['data'],
+      'city': responseJson['body'][4]['data']
+    };
+
+    // Try to find a link to stuttgart website
+    let linkMatch = responseJson['body'][5]['data'].match(this.constants['LINK_DETECTION_REGEX']);
+    details['link'] = (linkMatch && linkMatch.length > 0) ? linkMatch[0] : null;
+
+    // Return details object with complete flag
+    return {'details': details};
+  }
 
   /**
    * Method handles errors occured within http request

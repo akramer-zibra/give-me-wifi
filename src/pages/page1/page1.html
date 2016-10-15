@@ -16,18 +16,14 @@
 <ion-content padding>
   <p>Die nächsten Stuttgarter Wifi Spots in deiner Nähe sind...</p>
 
-  <p *ngIf="unknownLocation">
+  <p *ngIf="!location">
     Dein Standort ist nicht bekannt, sorry!
   </p>
 
   <ion-list>
-    <ion-card *ngFor="let wifiLocation of wifiLocations">
+    <ion-card *ngFor="let wifiLocation of wifiLocations | values">
       <ion-card-content>
-        <ion-card-title>Freier Wifi Hotspot</ion-card-title>
-        <p>
-          Lat.: {{wifiLocation.location.lat}}<br />
-          Lng.: {{wifiLocation.location.lng}}
-        </p>
+        <ion-card-title>{{wifiLocation.details.name}}</ion-card-title>
       </ion-card-content>
     </ion-card>
   </ion-list>
