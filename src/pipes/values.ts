@@ -4,7 +4,10 @@ import {Pipe, PipeTransform} from "@angular/core";
  * This pipe transforms an object with property names into an array with its property values
  * @see https://webcake.co/object-properties-in-angular-2s-ngfor/
  */
-@Pipe({name: 'values'})
+@Pipe({
+  name: 'values',
+  pure: false
+})
 export class ValuesPipe implements PipeTransform {
   transform(value: any, args?: any[]): any[] {
     // create instance vars to store keys and final output

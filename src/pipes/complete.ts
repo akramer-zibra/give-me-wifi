@@ -1,10 +1,11 @@
 import {Pipe, PipeTransform} from "@angular/core";
 
 /**
+ * @deprecated
  * This pipe returns only data objects which have a "complete" flag
  * @see https://webcake.co/object-properties-in-angular-2s-ngfor/
  */
-@Pipe({name: 'complete'})
+@Pipe({name: 'complete', pure: false})
 export class CompletePipe implements PipeTransform {
   transform(value: any, args?: any[]): any[] {
 
