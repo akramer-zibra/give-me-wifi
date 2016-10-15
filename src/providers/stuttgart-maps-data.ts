@@ -2,6 +2,7 @@ import "rxjs/Rx";
 import {Injectable} from "@angular/core";
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
 import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coordinates-calculator";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class StuttgartMapsData {
@@ -42,11 +43,6 @@ export class StuttgartMapsData {
 
     // Convert geolocation to coords
     let coords: Object = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
-
-    // DEBUG
-    console.debug("Call: retrieveWifiLocations");
-    console.debug(coords);
-    // DEBUG
 
     // Calculate border box with configurable point-width
     let xMin = coords['x'] - (0.5 * this.settings['boxSizeWidthPts']);
@@ -124,12 +120,12 @@ export class StuttgartMapsData {
    * @param wifiLocationId
    * @type {String}
    */
-  retrieveWifiLocationDetails(wifiLocationId: Number): String {
+  retrieveWifiLocationDetails(wifiLocationId: Number): Observable {
 
     // http://gis6.stuttgart.de/atlasfx/spring/rest/InfoBubble/6369/12668
     return this.http.get('http://gis6.stuttgart.de/atlasfx/spring/rest/InfoBubble/6369/'+ wifiLocationId)
-             .map((res: Response) => this.extractWifiLocationDetails(res))
-             .catch(this.handleError);
+                   .map((res: Response) => this.extractWifiLocationDetails(res))
+                   .catch(this.handleError);
   }
 
   /**
@@ -157,12 +153,6 @@ export class StuttgartMapsData {
     return {'details': details,
             'complete': true};
   }
-
-  /**
-   * TODO: Method gets wifi website item link from Stuttgart Maps server
-   * @param locationId
-   */
-  getWifiWebsiteItemLink(locationId: Number): String {}
 
   /**
    * Method handles errors occured within http request
