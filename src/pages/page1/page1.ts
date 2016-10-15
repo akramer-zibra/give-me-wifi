@@ -4,6 +4,7 @@ import {Geolocation} from "ionic-native";
 import {StuttgartMapsData} from "../../providers/stuttgart-maps-data";
 import {StuttgartMapsCalculator} from "../../services/stuttgart-maps-calculator";
 import {ValuesPipe} from "../../pipes/values";
+import {MLocation} from "../../model/location";
 
 @Component({
   selector: 'page-page1',
@@ -15,7 +16,7 @@ export class Page1 {
   /**
    * Location information
    */
-  private location: Object = null;
+  private location: MLocation = null;
 
   /**
    * This is a collection for temporary data which is not complete yet
@@ -28,7 +29,6 @@ export class Page1 {
    */
   private wifiLocations: Object = {};
 
-  //noinspection TsLint
   /**
    * Constructor method
    *
@@ -55,15 +55,11 @@ export class Page1 {
    */
   retrieveLocation(): void {
 
-    // DEBUG
-    console.debug("retrieveLocation");
-    // DEBUG
-
     // Use Geoelocation component to retrieve the device's location
     Geolocation.getCurrentPosition().then((position) => {
 
       // Remember retrieved position in member variable
-      let location = {
+      let location: MLocation = {
         "lat": position.coords.latitude,
         "lng": position.coords.longitude,
         "timestamp": position.timestamp
@@ -83,10 +79,10 @@ export class Page1 {
    * Method uses STuttgart Maps Data provider to retrieve free city wifi locations next to this
    * @param eventArgs
    */
-  retrieveWifiLocations(eventArgs: Array<Object>): void {
+  retrieveWifiLocations(eventArgs: Array<MLocation>): void {
 
     //
-    let geolocation = eventArgs[0];
+    let geolocation: MLocation = eventArgs[0];
 
     // Use data provider to retrieve Wifi locations
     // NOTICE: Returns an Observable
@@ -145,10 +141,6 @@ export class Page1 {
     // Merge route distance beeline into tmp collection
     (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], {'route': {'distance-beeline': distanceBeeline}});
 
-    // DEBUG
-    console.debug(this.tmpWifiLocations[wifiLocationId]);
-    // DEBUG
-
     // Trigger wifi location model changed event
     this.events.publish('wifi-location-model:changed', wifiLocationId);
   }
@@ -185,7 +177,7 @@ export class Page1 {
    * Method is used to apply a new given location
    * @param eventArgs
    */
-  applyLocation(eventArgs: Array): void {
+  applyLocation(eventArgs: Array<MLocation>): void {
 
     // Remember new location in model variable
     this.location = eventArgs[0];

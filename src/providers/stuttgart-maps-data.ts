@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core";
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
 import {StuttgartMapsCalculator} from "../services/stuttgart-maps-calculator";
 import {Observable} from "rxjs";
+import {MLocation} from "../model/location";
 
 @Injectable()
 export class StuttgartMapsData {
@@ -39,7 +40,7 @@ export class StuttgartMapsData {
    *
    * @param location
    */
-  retrieveWifiLocations(location: Object): Observable<Response> {
+  retrieveWifiLocations(location: MLocation): Observable<Response> {
 
     // Convert geolocation to coords
     let coords: Object = this.stuttgartMapsCalculator.convertGeolocationToCoords(location);
