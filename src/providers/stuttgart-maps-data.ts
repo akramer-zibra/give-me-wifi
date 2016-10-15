@@ -52,8 +52,24 @@ export class StuttgartMapsData {
 
     // Do POST request and return an Observable
     return this.http.post(this.settings['endpointUrl'], bodyParamString, options)
-                    .map((res: Response) => res.json())
+                    .map((res: Response) => this.extractWifiLocations(res))
                     .catch(this.handleError);
+  }
+
+  /**
+   * Method extracts wifi locations from received api response
+   * @param response
+   * @type {{}}
+   */
+  extractWifiLocations(response: Response): Object {
+
+    //
+    let responseJson = response.json();
+
+    // TODO: Extract wifi location coords
+
+    //
+    return responseJson;
   }
 
   /**

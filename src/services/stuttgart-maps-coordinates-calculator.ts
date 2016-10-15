@@ -10,12 +10,18 @@ export class StuttgartMapsCoordinatesCalculator {
   private pointKilometer: Number = 0.00100948;
 
   /**
+   * Defines how many coordinate points equas to one degree in geolocaion scale
+   * @type {number}
+   */
+  private oneDegreePoints: Number = 31304.248840319872506331995788156;
+
+  /**
    * Geolocation of Stuttgart Schlossplatz
-   * @type {{lat: string; lng: string}}
+   * @type {{lat: number; lng: number}}
    */
   private schlossplatzGeolocation: Object = {
-    'lat': '48.77855146',
-    'lng': '9.17984426'
+    'lat': 48.77855146,
+    'lng': 9.17984426
   }
 
   /**
@@ -79,12 +85,24 @@ export class StuttgartMapsCoordinatesCalculator {
   }
 
   /**
-   * TODO: Method converts geolocation to coords
+   * Method converts geolocation to coords
    * @param geolocation
    * @type {{x: Number, y: Number}}
    */
   convertGeolocationToCoords(geolocation: Object): Object {
 
-    return {'x': 0.000, 'y': 0.0000};
+    // Calculate delta lat lng between fix point and given geolocation
+    let deltaLat: Number = this.schlossplatzGeolocation['lat'] - geolocation['lat'];
+    let deltaLng: Number = this.schlossplatzGeolocation['lng'] - geolocation['lng'];
+
+    // Calculate delta coords points
+    let deltaX: Number = deltaLat * this.oneDegreePoints;
+    let deltaY: Number = deltaLng * this.oneDegreePoints;
+
+    // Calculate coords of given geolocation
+    let x: Number = this.schlossplatzCoordinates['x'] + deltaX;
+    let y: Number = this.schlossplatzCoordinates['y'] + deltaY;
+
+    return {'x': x, 'y': y};
   }
-s}
+}
