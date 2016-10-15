@@ -45,9 +45,6 @@ export class Page1 {
     events.subscribe("location:retrieved", this.retrieveWifiLocations.bind(this));
     events.subscribe("wifi-location:retrieved", this.retrieveWifiLocationDetails.bind(this));
     events.subscribe("wifi-location-model:changed", this.completeCheckWifiLocation.bind(this));
-
-    // Listen to Model changes and then mark this component for change detection
-//    events.subscribe("page1-model:changed", changeDetectorRef.markForCheck);
   }
 
   /**
