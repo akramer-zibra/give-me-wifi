@@ -27,9 +27,12 @@ export class StuttgartMapsData {
   /**
    * Method uses http client to ask stuttgart maps server for wifi locations
    *
-   * @param coords
+   * @param location
    */
-  getWifiLocations(coords: Object): Observable<Response> {
+  getWifiLocations(location: Object): Observable<Response> {
+
+    // Convert geolocation to coords
+    let coords: Object = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
 
     // DEBUG
     console.debug("Call: getWifiLocations");

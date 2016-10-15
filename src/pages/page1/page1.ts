@@ -5,7 +5,6 @@ import { NavController, Events } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
 
 import { StuttgartMapsData } from '../../providers/stuttgart-maps-data';
-import { StuttgartMapsCoordinatesCalculator } from '../../services/stuttgart-maps-coordinates-calculator';
 
 @Component({
   selector: 'page-page1',
@@ -19,17 +18,20 @@ export class Page1 {
   private location: Object = null;
 
   /**
+   * Model collection variable with wifi locations
+   */
+  private wifiLocations: Array;
+
+  /**
    * Constructor method
    *
    * @param navCtrl
    * @param events
    * @param stuttgartMapsData
-   * @param stuttgartMapsCoordinatesCalculator
    */
   constructor(public navCtrl: NavController,
               private events: Events,
-              private stuttgartMapsData: StuttgartMapsData,
-              private stuttgartMapsCoordinatesCalculator: StuttgartMapsCoordinatesCalculator) {
+              private stuttgartMapsData: StuttgartMapsData) {
 
     // Configure event listeners
     events.subscribe("location:retrieved", this.applyLocation.bind(this));
@@ -80,30 +82,24 @@ export class Page1 {
   retrieveWifiLocations(eventArgs: Array<Object>) {
 
     //
-    let location = eventArgs[0];
+    let geolocation = eventArgs[0];
 
     // DEBUG
     console.debug("Call: retrieveWifiLocations");
-    console.debug(location);
+    console.debug(geolocation);
     // DEBUG
-
-    // Convert lat-lng to coords
-    let coords = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
 
     // Use data provider to retrieve Wifi locations
     // NOTICE: Returns an Observable
-    // TODO: use converted geolocation
-    this.stuttgartMapsData.getWifiLocations({'x': coords['x'], 'y': coords['y']})
-                          .subscribe((response) => {
+    this.stuttgartMapsData.getWifiLocations(geolocation)
+                          .subscribe((wifiLocations) => {
 
-
-      // TODO: Convert location coords into geolocation
-
-      // TODO: Store Wifi location into model variable
+      // Store Wifi locations into model variable
+      this.wifiLocations = wifiLocations;
 
       // DEBUG
       console.debug("Event: retrieveWifiLocations");
-      console.debug(response);
+      console.debug(wifiLocations);
       // DEBUG
     });
   }
