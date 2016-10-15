@@ -141,10 +141,6 @@ export class StuttgartMapsData {
     // Use response object as JSON object
     let responseJson = response.json();
 
-    // DEBUG
-    console.debug(responseJson);
-    // DEBUG
-
     // Extract interesting data into new object
     let details = {
       'name': responseJson['body'][1]['data'],
