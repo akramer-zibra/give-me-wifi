@@ -15,7 +15,7 @@ export class StuttgartMapsData {
     endpointUrl : "http://gis6.stuttgart.de/atlasfx/spring/rest/MapServer/6369/query",
     boxSizeWidthPts: 2000,
     boxSizeHeightPts: 2000
-  }
+  };
 
   /**
    * Variable with constants
@@ -24,7 +24,7 @@ export class StuttgartMapsData {
    */
   private constants : Object = {
     LINK_DETECTION_REGEX : /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\s+|$)/gi
-  }
+  };
 
   /**
    * Constructor method
@@ -150,8 +150,7 @@ export class StuttgartMapsData {
     details['link'] = (linkMatch && linkMatch.length > 0) ? linkMatch[0] : null;
 
     // Return details object with complete flag
-    return {'details': details,
-            'complete': true};
+    return {'details': details};
   }
 
   /**
