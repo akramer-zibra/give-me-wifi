@@ -1,10 +1,7 @@
-import { Component } from '@angular/core';
-
-import { NavController, Events } from 'ionic-angular';
-
-import { Geolocation } from 'ionic-native';
-
-import { StuttgartMapsData } from '../../providers/stuttgart-maps-data';
+import {Component} from "@angular/core";
+import {NavController, Events} from "ionic-angular";
+import {Geolocation} from "ionic-native";
+import {StuttgartMapsData} from "../../providers/stuttgart-maps-data";
 
 @Component({
   selector: 'page-page1',
@@ -36,6 +33,7 @@ export class Page1 {
     // Configure event listeners
     events.subscribe("location:retrieved", this.applyLocation.bind(this));
     events.subscribe("location:retrieved", this.retrieveWifiLocations.bind(this));
+    events.subscribe("wifi-location:retrieved", this.retrieveWifiLocationDetails.bind(this));
   }
 
   /**
@@ -98,8 +96,46 @@ export class Page1 {
       this.wifiLocations = wifiLocations;
 
       // DEBUG
+      console.debug(wifiLocations);
+      // DEBUG
+
+      // Iterate retrieved wifi location
+      for(let wifiLocationId in wifiLocations) {
+
+        // FIXME: trigger details retrieve differently
+        this.events.publish('wifi-location:retrieved', wifiLocationId);
+      }
+
+      // DEBUG
       console.debug("Event: retrieveWifiLocations");
       console.debug(wifiLocations);
+      // DEBUG
+    });
+  }
+
+  /**
+   * Method uses stuttgart maps data provider to retrieve Wifi location detail information
+   * @param eventArgs
+   */
+  retrieveWifiLocationDetails(eventArgs: Array) {
+
+    // Get wifi location from event args
+    let wifiLocationId: Number = eventArgs[0];
+
+    // DEBUG
+    console.debug('Call: retrieveWifiLocationDetails');
+    console.debug(wifiLocationId);
+    // DEBUG
+
+    // Use stuttgart maps data provider ro retrieve wifi location details
+    this.stuttgartMapsData.retrieveWifiLocationDetails(wifiLocationId)
+                          .subscribe((wifiLocationDetails) => {
+
+      // Merge details in wifiLocations model variable
+      Object.assign(this.wifiLocations[wifiLocationId], wifiLocationDetails);
+
+      // DEBUG
+      console.debug(this.wifiLocations);
       // DEBUG
     });
   }
