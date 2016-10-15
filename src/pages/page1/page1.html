@@ -3,28 +3,34 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Wifi in deiner Nähe</ion-title>
-
-    <ion-buttons margin-right end>
-      <button ion-button (click)="retrieveLocation()">
-        <ion-icon name="locate"></ion-icon>
-      </button>
-    </ion-buttons>
+    <ion-title>Wifis in deiner Nähe...</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <p>Die nächsten Stuttgarter Wifi Spots in deiner Nähe sind...</p>
+  <ion-row>
+    <ion-col center text-center>
+      <ion-icon name="locate" style="font-size: 45pt;" (click)="retrieveLocation()"></ion-icon>
+    </ion-col>
+  </ion-row>
 
   <p *ngIf="!location">
     Dein Standort ist nicht bekannt, sorry!
   </p>
 
   <ion-list>
-    <ion-card *ngFor="let wifiLocation of wifiLocations | values">
+    <ion-card *ngFor="let wifiLocation of wifiLocations | values:'sort'">
       <ion-card-content>
         <ion-card-title>{{wifiLocation.details.name}}</ion-card-title>
       </ion-card-content>
+
+      <ion-row>
+        <ion-col center text-center>
+          <ion-note>
+            {{wifiLocation.route['distance-beeline'] | number:'.2'}} km
+          </ion-note>
+        </ion-col>
+      </ion-row>
     </ion-card>
   </ion-list>
 </ion-content>

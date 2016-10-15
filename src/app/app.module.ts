@@ -2,19 +2,15 @@ import {NgModule} from "@angular/core";
 import {IonicApp, IonicModule} from "ionic-angular";
 import {StuttgartFinderApp} from "./app.component";
 import {Page1} from "../pages/page1/page1";
-import {Page2} from "../pages/page2/page2";
 import {ValuesPipe} from "../pipes/values";
-import {CompletePipe} from "../pipes/complete";
 import {StuttgartMapsData} from "../providers/stuttgart-maps-data";
-import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coordinates-calculator";
+import {StuttgartMapsCalculator} from "../services/stuttgart-maps-calculator";
 
 @NgModule({
   declarations: [
     StuttgartFinderApp,
     Page1,
-    Page2,
-    ValuesPipe,
-    CompletePipe
+    ValuesPipe
   ],
   imports: [
     IonicModule.forRoot(StuttgartFinderApp)
@@ -22,9 +18,8 @@ import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coo
   bootstrap: [IonicApp],
   entryComponents: [
     StuttgartFinderApp,
-    Page1,
-    Page2
+    Page1
   ],
-  providers: [StuttgartMapsData, StuttgartMapsCoordinatesCalculator]
+  providers: [StuttgartMapsData, StuttgartMapsCalculator]
 })
 export class AppModule {}

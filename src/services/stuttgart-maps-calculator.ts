@@ -1,7 +1,9 @@
 import {Injectable} from "@angular/core";
+import {MLocation} from "../model/location";
+import {MCoordinates} from "../model/coordinates";
 
 @Injectable()
-export class StuttgartMapsCoordinatesCalculator {
+export class StuttgartMapsCalculator {
 
   /**
    * Defines how many coordinate points equals to one degree in geolocaion scale
@@ -19,7 +21,7 @@ export class StuttgartMapsCoordinatesCalculator {
    * Geolocation of Stuttgart Schlossplatz
    * @type {{lat: number; lng: number}}
    */
-  private schlossplatzGeolocation: Object = {
+  private schlossplatzGeolocation: MLocation = {
     'lat': 48.77855146,
     'lng': 9.17984426
   }
@@ -28,7 +30,7 @@ export class StuttgartMapsCoordinatesCalculator {
    * Point coordinates of Stuttgart Schlossplatz
    * @type {{x: number; y: number}}
    */
-  private schlossplatzCoordinates: Object = {
+  private schlossplatzCoordinates: MCoordinates = {
     'x': 3513294,
     'y': 5404578
   }
@@ -39,11 +41,11 @@ export class StuttgartMapsCoordinatesCalculator {
   constructor() {}
 
   /**
-   * TODO: Method converts coords to geolocation
+   * Method converts coords to geolocation
    * @param coords
    * @type {{lat: number, lng: number}}
    */
-  convertCoordsToGeolocation(coords: Object): Object {
+  convertCoordsToGeolocation(coords: MCoordinates): MLocation {
 
     // Calculate delta between fix point and given coordinates
     let deltaX: Number = coords['x'] - this.schlossplatzCoordinates['x'];
@@ -66,7 +68,7 @@ export class StuttgartMapsCoordinatesCalculator {
    * @param geolocation
    * @type {{x: Number, y: Number}}
    */
-  convertGeolocationToCoords(geolocation: Object): Object {
+  convertGeolocationToCoords(geolocation: MLocation): MCoordinates {
 
     // Calculate delta lat lng between fix point and given geolocation
     let deltaLat: Number = this.schlossplatzGeolocation['lat'] - geolocation['lat'];
@@ -85,14 +87,19 @@ export class StuttgartMapsCoordinatesCalculator {
 
   /**
    * Method calculates distance between two geolocations
-   * @param lat1
-   * @param lng1
-   * @param lat2
-   * @param lng2
+   * @param location
+   * @param destination
    * @return {number}
    * @see http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
    */
-  calculateDistanceBetweenGeolocations(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  calculateDistanceBetweenGeolocations(location: MLocation, destination: MLocation): number {
+
+    let lat1 = location['lat'];
+    let lng1 = location['lng'];
+
+    let lat2 = destination['lat'];
+    let lng2 = destination['lng'];
+
     var deg2Rad = deg => {
       return deg * Math.PI / 180;
     }
