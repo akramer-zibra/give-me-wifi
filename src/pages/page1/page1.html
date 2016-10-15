@@ -21,10 +21,18 @@
   </p>
 
   <ion-list>
-    <ion-card *ngFor="let wifiLocation of wifiLocations | values">
+    <ion-card *ngFor="let wifiLocation of wifiLocations | values:'sort'">
       <ion-card-content>
         <ion-card-title>{{wifiLocation.details.name}}</ion-card-title>
       </ion-card-content>
+
+      <ion-row>
+        <ion-col center text-center>
+          <ion-note>
+            {{wifiLocation.route['distance-beeline'] | number:'.2'}} km
+          </ion-note>
+        </ion-col>
+      </ion-row>
     </ion-card>
   </ion-list>
 </ion-content>
