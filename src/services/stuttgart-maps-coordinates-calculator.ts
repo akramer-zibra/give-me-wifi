@@ -82,4 +82,30 @@ export class StuttgartMapsCoordinatesCalculator {
 
     return {'x': x, 'y': y};
   }
+
+  /**
+   * Method calculates distance between two geolocations
+   * @param lat1
+   * @param lng1
+   * @param lat2
+   * @param lng2
+   * @return {number}
+   * @see http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+   */
+  calculateDistanceBetweenGeolocations(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    var deg2Rad = deg => {
+      return deg * Math.PI / 180;
+    }
+
+    var r = 6371; // Radius of the earth in km
+    var dLat = deg2Rad(lat2 - lat1);
+    var dLon = deg2Rad(lng2 - lng1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2Rad(lat1)) * Math.cos(deg2Rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = r * c; // Distance in km
+    return d;
+  }
 }
