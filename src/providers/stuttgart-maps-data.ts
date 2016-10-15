@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
 import "rxjs/Rx";
+import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coordinates-calculator";
 
 @Injectable()
 export class StuttgartMapsData {
@@ -18,15 +19,20 @@ export class StuttgartMapsData {
   /**
    * Constructor method
    * @param http
+   * @param stuttgartMapsCoordinatesCalculator
    */
-  constructor(private http: Http) {}
+  constructor(private http: Http,
+              private stuttgartMapsCoordinatesCalculator: StuttgartMapsCoordinatesCalculator) {}
 
   /**
    * Method uses http client to ask stuttgart maps server for wifi locations
    *
-   * @param coords
+   * @param location
    */
-  getWifiLocations(coords: Object): Observable<Response> {
+  getWifiLocations(location: Object): Observable<Response> {
+
+    // Convert geolocation to coords
+    let coords: Object = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
 
     // DEBUG
     console.debug("Call: getWifiLocations");
@@ -52,8 +58,47 @@ export class StuttgartMapsData {
 
     // Do POST request and return an Observable
     return this.http.post(this.settings['endpointUrl'], bodyParamString, options)
-                    .map((res: Response) => res.json())
+                    .map((res: Response) => this.extractWifiLocations(res))
                     .catch(this.handleError);
+  }
+
+  /**
+   * TODO: Method retrieves wifi location details from Stuttgart Maps server
+   * @param itemId
+   */
+  getWifiLocationDetails(itemId: Number): String {
+
+    return "Details";
+  }
+
+  /**
+   * Method extracts wifi locations from received api response
+   * @param response
+   * @type Array
+   */
+  extractWifiLocations(response: Response): Array {
+
+    // Convert received response into a JSON object
+    let responseJson = response.json();
+
+    // Initialize empty objects collection
+    var wifiLocationObjects = [];
+
+    // TODO: Extract wifi location coords
+    for(let wifiLocationIdx in responseJson['features']) {
+
+      // Convert coords to geolocation
+      let location = this.stuttgartMapsCoordinatesCalculator.convertCoordsToGeolocation(responseJson['features'][wifiLocationIdx]['geometry']);
+
+      // Copy wifi location data to result collection
+      wifiLocationObjects.push({
+        'attributes': responseJson['features'][wifiLocationIdx]['attributes'],
+        'location': location
+      });
+    }
+
+    //
+    return wifiLocationObjects;
   }
 
   /**

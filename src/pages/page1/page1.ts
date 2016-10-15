@@ -15,7 +15,12 @@ export class Page1 {
   /**
    * Location information
    */
-  private location: any = true;
+  private location: Object = null;
+
+  /**
+   * Model collection variable with wifi locations
+   */
+  private wifiLocations: Array;
 
   /**
    * Constructor method
@@ -47,9 +52,9 @@ export class Page1 {
 
       // Remember retrieved position in member variable
       this.location = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        timestamp: position.timestamp
+        "lat": position.coords.latitude,
+        "lng": position.coords.longitude,
+        "timestamp": position.timestamp
       }
 
       // DEBUG
@@ -72,26 +77,29 @@ export class Page1 {
 
   /**
    * Method uses STuttgart Maps Data provider to retrieve free city wifi locations next to this
-   * @param location
+   * @param eventArgs
    */
-  retrieveWifiLocations(location: Object) {
+  retrieveWifiLocations(eventArgs: Array<Object>) {
+
+    //
+    let geolocation = eventArgs[0];
 
     // DEBUG
     console.debug("Call: retrieveWifiLocations");
-    console.debug(location);
+    console.debug(geolocation);
     // DEBUG
-
-    // TODO: Convert lat-lng to coords
 
     // Use data provider to retrieve Wifi locations
     // NOTICE: Returns an Observable
-    // TODO: use converted geolocation
-    this.stuttgartMapsData.getWifiLocations({'x': 3513184, 'y': 5404218})
-                          .subscribe((response) => {
+    this.stuttgartMapsData.getWifiLocations(geolocation)
+                          .subscribe((wifiLocations) => {
+
+      // Store Wifi locations into model variable
+      this.wifiLocations = wifiLocations;
 
       // DEBUG
       console.debug("Event: retrieveWifiLocations");
-      console.debug(response);
+      console.debug(wifiLocations);
       // DEBUG
     });
   }
