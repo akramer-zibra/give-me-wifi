@@ -29,13 +29,13 @@ export class StuttgartMapsData {
    *
    * @param location
    */
-  getWifiLocations(location: Object): Observable<Response> {
+  retrieveWifiLocations(location: Object): Observable<Response> {
 
     // Convert geolocation to coords
     let coords: Object = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
 
     // DEBUG
-    console.debug("Call: getWifiLocations");
+    console.debug("Call: retrieveWifiLocations");
     console.debug(coords);
     // DEBUG
 
@@ -63,18 +63,9 @@ export class StuttgartMapsData {
   }
 
   /**
-   * TODO: Method retrieves wifi location details from Stuttgart Maps server
-   * @param itemId
-   */
-  getWifiLocationDetails(itemId: Number): String {
-
-    return "Details";
-  }
-
-  /**
    * Method extracts wifi locations from received api response
    * @param response
-   * @type Array
+   * @type {Array}
    */
   extractWifiLocations(response: Response): Array {
 
@@ -84,8 +75,12 @@ export class StuttgartMapsData {
     // Initialize empty objects collection
     var wifiLocationObjects = [];
 
-    // TODO: Extract wifi location coords
+    // Extract encapsulated wifi location from response message
     for(let wifiLocationIdx in responseJson['features']) {
+
+      // TODO: refactor to event triggered procession
+      // ...convert coords to geolocation
+      // ...retrieve detailed information about the location
 
       // Convert coords to geolocation
       let location = this.stuttgartMapsCoordinatesCalculator.convertCoordsToGeolocation(responseJson['features'][wifiLocationIdx]['geometry']);
@@ -99,6 +94,26 @@ export class StuttgartMapsData {
 
     //
     return wifiLocationObjects;
+  }
+
+  /**
+   * TODO: Method converts retrieved Wifi location coords to geolocation
+   */
+  processWifiLocationCoordsConvert() {}
+
+  /**
+   * TODO: Method retrieves detailed information about a certain Wifi location
+   */
+  processWifiLocationDetailRetrieve() {}
+
+  /**
+   * TODO: Method retrieves wifi location details from Stuttgart Maps server
+   * @param itemId
+   * @type {String}
+   */
+  getWifiLocationDetails(itemId: Number): String {
+
+    return "Details";
   }
 
   /**

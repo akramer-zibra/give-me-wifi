@@ -91,7 +91,7 @@ export class Page1 {
 
     // Use data provider to retrieve Wifi locations
     // NOTICE: Returns an Observable
-    this.stuttgartMapsData.getWifiLocations(geolocation)
+    this.stuttgartMapsData.retrieveWifiLocations(geolocation)
                           .subscribe((wifiLocations) => {
 
       // Store Wifi locations into model variable
