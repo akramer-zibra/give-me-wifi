@@ -1,7 +1,7 @@
 import "rxjs/Rx";
 import {Injectable} from "@angular/core";
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
-import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coordinates-calculator";
+import {StuttgartMapsCalculator} from "../services/stuttgart-maps-calculator";
 import {Observable} from "rxjs";
 
 @Injectable()
@@ -29,10 +29,10 @@ export class StuttgartMapsData {
   /**
    * Constructor method
    * @param http
-   * @param stuttgartMapsCoordinatesCalculator
+   * @param stuttgartMapsCalculator
    */
   constructor(private http: Http,
-              private stuttgartMapsCoordinatesCalculator: StuttgartMapsCoordinatesCalculator) {}
+              private stuttgartMapsCalculator: StuttgartMapsCalculator) {}
 
   /**
    * Method uses http client to ask stuttgart maps server for wifi locations
@@ -42,7 +42,7 @@ export class StuttgartMapsData {
   retrieveWifiLocations(location: Object): Observable<Response> {
 
     // Convert geolocation to coords
-    let coords: Object = this.stuttgartMapsCoordinatesCalculator.convertGeolocationToCoords(location);
+    let coords: Object = this.stuttgartMapsCalculator.convertGeolocationToCoords(location);
 
     // Calculate border box with configurable point-width
     let xMin = coords['x'] - (0.5 * this.settings['boxSizeWidthPts']);
@@ -88,7 +88,7 @@ export class StuttgartMapsData {
       // ...retrieve detailed information about the location
 
       // Convert coords to geolocation
-      let location = this.stuttgartMapsCoordinatesCalculator.convertCoordsToGeolocation(responseJson['features'][wifiLocationIdx]['geometry']);
+      let location = this.stuttgartMapsCalculator.convertCoordsToGeolocation(responseJson['features'][wifiLocationIdx]['geometry']);
 
       // Extract location identifier
       let wifiLocationId = responseJson['features'][wifiLocationIdx]['attributes']['id'];

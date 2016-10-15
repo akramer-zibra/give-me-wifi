@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {NavController, Events} from "ionic-angular";
 import {Geolocation} from "ionic-native";
 import {StuttgartMapsData} from "../../providers/stuttgart-maps-data";
-import {StuttgartMapsCoordinatesCalculator} from "../../services/stuttgart-maps-coordinates-calculator";
+import {StuttgartMapsCalculator} from "../../services/stuttgart-maps-calculator";
 import {ValuesPipe} from "../../pipes/values";
 
 @Component({
@@ -34,12 +34,12 @@ export class Page1 {
    * @param navCtrl
    * @param events
    * @param stuttgartMapsData
-   * @param stuttgartMapsCoordinatesCalculator
+   * @param stuttgartMapsCalculator
    */
   constructor(public navCtrl: NavController,
               private events: Events,
               private stuttgartMapsData: StuttgartMapsData,
-              private stuttgartMapsCoordinatesCalculator: StuttgartMapsCoordinatesCalculator) {
+              private stuttgartMapsCalculator: StuttgartMapsCalculator) {
 
     // Configure event listeners
     events.subscribe("location:retrieved", this.applyLocation.bind(this));
@@ -95,9 +95,6 @@ export class Page1 {
       // Store Wifi locations into model variable
       this.tmpWifiLocations = wifiLocations;
 
-      // Trigger wifi location model changed event
-      this.events.publish('wifi-location-model:changed', wifiLocationId);
-
       // Iterate retrieved wifi location
       for(let wifiLocationId in wifiLocations) {
 
@@ -142,7 +139,7 @@ export class Page1 {
     let tmpWifiLOcationObject = this.tmpWifiLocations[wifiLocationId];
 
     // Use Stuttgart Maps calculator service
-    let distanceBeeline = this.stuttgartMapsCoordinatesCalculator.calculateDistanceBetweenGeolocations(this.location, tmpWifiLOcationObject['location']);
+    let distanceBeeline = this.stuttgartMapsCalculator.calculateDistanceBetweenGeolocations(this.location, tmpWifiLOcationObject['location']);
 
     // Merge route distance beeline into tmp collection
     (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], {'route': {'distance-beeline': distanceBeeline}});
@@ -165,7 +162,7 @@ export class Page1 {
     let wifiLocationId: Number = eventArgs[0];
 
     // Try to find specified
-    if(!this.tmpWifiLocations.hasOwnProperty(wifiLocationId)) {
+    if(!this.tmpWifiLocations.hasOwnProperty(wifiLocationId.toString())) {
       return;
     }
 

@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 
 @Injectable()
-export class StuttgartMapsCoordinatesCalculator {
+export class StuttgartMapsCalculator {
 
   /**
    * Defines how many coordinate points equals to one degree in geolocaion scale
