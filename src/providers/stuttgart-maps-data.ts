@@ -4,6 +4,7 @@ import {Http, Headers, RequestOptions, Response} from "@angular/http";
 import {StuttgartMapsCalculator} from "../services/stuttgart-maps-calculator";
 import {Observable} from "rxjs";
 import {MLocation} from "../model/location";
+import {MWifiLocation} from "../model/wifi-location";
 
 @Injectable()
 export class StuttgartMapsData {
@@ -79,7 +80,7 @@ export class StuttgartMapsData {
     let responseJson = response.json();
 
     // Initialize empty objects collection with index on itemId
-    var wifiLocationObjects = {};
+    var wifiLocationObjects: {[id: number] : MWifiLocation} = {};
 
     // Extract encapsulated wifi location from response message
     for(let wifiLocationIdx in responseJson['features']) {
@@ -92,7 +93,7 @@ export class StuttgartMapsData {
       let location = this.stuttgartMapsCalculator.convertCoordsToGeolocation(responseJson['features'][wifiLocationIdx]['geometry']);
 
       // Extract location identifier
-      let wifiLocationId = responseJson['features'][wifiLocationIdx]['attributes']['id'];
+      let wifiLocationId: Number = responseJson['features'][wifiLocationIdx]['attributes']['id'];
 
       // Copy wifi location data to result collection
       wifiLocationObjects[wifiLocationId] = {
@@ -105,16 +106,6 @@ export class StuttgartMapsData {
     //
     return wifiLocationObjects;
   }
-
-  /**
-   * TODO: Method converts retrieved Wifi location coords to geolocation
-   */
-  processWifiLocationCoordsConvert() {}
-
-  /**
-   * TODO: Method retrieves detailed information about a certain Wifi location
-   */
-  processWifiLocationDetailRetrieve() {}
 
   /**
    * Method retrieves wifi location details from Stuttgart Maps server

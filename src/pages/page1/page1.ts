@@ -5,6 +5,7 @@ import {StuttgartMapsData} from "../../providers/stuttgart-maps-data";
 import {StuttgartMapsCalculator} from "../../services/stuttgart-maps-calculator";
 import {ValuesPipe} from "../../pipes/values";
 import {MLocation} from "../../model/location";
+import {MWifiLocation} from "../../model/wifi-location";
 
 @Component({
   selector: 'page-page1',
@@ -22,12 +23,12 @@ export class Page1 {
    * This is a collection for temporary data which is not complete yet
    * @type {{}}
    */
-  private tmpWifiLocations: Object = {};
+  private tmpWifiLocations: {[id: number] : MWifiLocation} = {};
 
   /**
    * Model collection variable with wifi locations
    */
-  private wifiLocations: Object = {};
+  private wifiLocations: {[id: number] : MWifiLocation} = {};
 
   /**
    * Constructor method
