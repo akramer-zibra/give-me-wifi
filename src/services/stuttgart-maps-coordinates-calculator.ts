@@ -4,10 +4,16 @@ import {Injectable} from "@angular/core";
 export class StuttgartMapsCoordinatesCalculator {
 
   /**
-   * Defines how many coordinate points equas to one degree in geolocaion scale
+   * Defines how many coordinate points equals to one degree in geolocaion scale
    * @type {number}
    */
   private oneDegreePoints: Number = 31304.248840319872506331995788156;
+
+  /**
+   * Defines how many dregrees equals to one point in coordinates
+   * @type {number}
+   */
+  private onePointDegrees: Number = (0.0035139 / 110);
 
   /**
    * Geolocation of Stuttgart Schlossplatz
@@ -35,11 +41,24 @@ export class StuttgartMapsCoordinatesCalculator {
   /**
    * TODO: Method converts coords to geolocation
    * @param coords
-   * @type {{lat: string, lng: string}}
+   * @type {{lat: number, lng: number}}
    */
   convertCoordsToGeolocation(coords: Object): Object {
 
-    return {'lat': '', 'lng': ''};
+    // Calculate delta between fix point and given coordinates
+    let deltaX: Number = coords['x'] - this.schlossplatzCoordinates['x'];
+    let deltaY: Number = coords['y'] - this.schlossplatzCoordinates['y'];
+
+    // Calculate delta lat-lng degrees
+    let deltaLat: Number = deltaX * this.onePointDegrees;
+    let deltaLng: Number = deltaY * this.onePointDegrees;
+
+    // Calculate lat-lng geocoordinates
+    let lat: Number = this.schlossplatzGeolocation['lat'] + deltaLat;
+    let lng: Number = this.schlossplatzGeolocation['lng'] + deltaLng;
+
+    // return converted lat and lng coordinates
+    return {'lat': lat, 'lng': lng};
   }
 
   /**
