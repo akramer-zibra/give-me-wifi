@@ -51,7 +51,7 @@ export class Page1 {
     Geolocation.getCurrentPosition().then((position) => {
 
       // Remember retrieved position in member variable
-      this.location = {
+      let location = {
         "lat": position.coords.latitude,
         "lng": position.coords.longitude,
         "timestamp": position.timestamp
@@ -62,7 +62,7 @@ export class Page1 {
       // DEBUG
 
       // Trigger event location retrieved
-      this.events.publish("location:retrieved", this.location);
+      this.events.publish("location:retrieved", location);
 
     }, (err) => {
 
@@ -110,9 +110,7 @@ export class Page1 {
    */
   applyLocation(location: Object) {
 
-    // DEBUG
-    console.debug("Call: applyLocation");
-    console.debug(location);
-    // DEBUG
+    // Remember new location in model variable
+    this.location = location;
   }
 }
