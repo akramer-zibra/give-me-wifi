@@ -4,12 +4,11 @@ import {Geolocation} from "ionic-native";
 import {StuttgartMapsData} from "../../providers/stuttgart-maps-data";
 import {StuttgartMapsCoordinatesCalculator} from "../../services/stuttgart-maps-coordinates-calculator";
 import {ValuesPipe} from "../../pipes/values";
-import {CompletePipe} from "../../pipes/complete";
 
 @Component({
   selector: 'page-page1',
   templateUrl: 'page1.html',
-  pipes: [CompletePipe, ValuesPipe]
+  pipes: [ValuesPipe]
 })
 export class Page1 {
 
@@ -147,6 +146,10 @@ export class Page1 {
 
     // Merge route distance beeline into tmp collection
     (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], {'route': {'distance-beeline': distanceBeeline}});
+
+    // DEBUG
+    console.debug(this.tmpWifiLocations[wifiLocationId]);
+    // DEBUG
 
     // Trigger wifi location model changed event
     this.events.publish('wifi-location-model:changed', wifiLocationId);

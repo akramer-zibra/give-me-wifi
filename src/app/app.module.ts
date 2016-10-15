@@ -4,7 +4,6 @@ import {StuttgartFinderApp} from "./app.component";
 import {Page1} from "../pages/page1/page1";
 import {Page2} from "../pages/page2/page2";
 import {ValuesPipe} from "../pipes/values";
-import {CompletePipe} from "../pipes/complete";
 import {StuttgartMapsData} from "../providers/stuttgart-maps-data";
 import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coordinates-calculator";
 
@@ -13,8 +12,7 @@ import {StuttgartMapsCoordinatesCalculator} from "../services/stuttgart-maps-coo
     StuttgartFinderApp,
     Page1,
     Page2,
-    ValuesPipe,
-    CompletePipe
+    ValuesPipe
   ],
   imports: [
     IonicModule.forRoot(StuttgartFinderApp)
