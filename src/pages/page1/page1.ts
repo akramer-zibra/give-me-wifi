@@ -1,7 +1,8 @@
-import {Component, ChangeDetectorRef} from "@angular/core";
+import {Component} from "@angular/core";
 import {NavController, Events} from "ionic-angular";
 import {Geolocation} from "ionic-native";
 import {StuttgartMapsData} from "../../providers/stuttgart-maps-data";
+import {StuttgartMapsCoordinatesCalculator} from "../../services/stuttgart-maps-coordinates-calculator";
 import {ValuesPipe} from "../../pipes/values";
 import {CompletePipe} from "../../pipes/complete";
 
@@ -34,23 +35,25 @@ export class Page1 {
    * @param navCtrl
    * @param events
    * @param stuttgartMapsData
+   * @param stuttgartMapsCoordinatesCalculator
    */
   constructor(public navCtrl: NavController,
               private events: Events,
-              private changeDetectorRef: ChangeDetectorRef,
-              private stuttgartMapsData: StuttgartMapsData) {
+              private stuttgartMapsData: StuttgartMapsData,
+              private stuttgartMapsCoordinatesCalculator: StuttgartMapsCoordinatesCalculator) {
 
     // Configure event listeners
     events.subscribe("location:retrieved", this.applyLocation.bind(this));
     events.subscribe("location:retrieved", this.retrieveWifiLocations.bind(this));
     events.subscribe("wifi-location:retrieved", this.retrieveWifiLocationDetails.bind(this));
+    events.subscribe("wifi-location:retrieved", this.retrieveWifiLocationDistance.bind(this));
     events.subscribe("wifi-location-model:changed", this.completeCheckWifiLocation.bind(this));
   }
 
   /**
    * Method tries to find retrieve the user's location
    */
-  retrieveLocation() {
+  retrieveLocation(): void {
 
     // DEBUG
     console.debug("retrieveLocation");
@@ -88,7 +91,7 @@ export class Page1 {
    * Method uses STuttgart Maps Data provider to retrieve free city wifi locations next to this
    * @param eventArgs
    */
-  retrieveWifiLocations(eventArgs: Array<Object>) {
+  retrieveWifiLocations(eventArgs: Array<Object>): void {
 
     //
     let geolocation = eventArgs[0];
@@ -117,7 +120,7 @@ export class Page1 {
    * Method uses stuttgart maps data provider to retrieve Wifi location detail information
    * @param eventArgs
    */
-  retrieveWifiLocationDetails(eventArgs: Array) {
+  retrieveWifiLocationDetails(eventArgs: Array): void {
 
     // Get wifi location from event args
     let wifiLocationId: Number = eventArgs[0];
@@ -128,11 +131,40 @@ export class Page1 {
 
                             // Merge details in wifiLocations model variable
                             // @see http://stackoverflow.com/a/38860354/2145395
-                            this.wifiLocations[wifiLocationId] = (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], wifiLocationDetails);
+                            (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], wifiLocationDetails);
 
                             // Trigger wifi location model changed event
                             this.events.publish('wifi-location-model:changed', wifiLocationId);
     });
+  }
+
+  /**
+   * Method retrieves calculated distance in kilometers beeline
+   * @param eventArgs
+   */
+  retrieveWifiLocationDistance(eventArgs: Array): void {
+
+    // Get wifi location from event args
+    let wifiLocationId: Number = eventArgs[0];
+
+    // Use data from temporary object
+    let tmpWifiLOcationObject = this.tmpWifiLocations[wifiLocationId];
+
+    console.debug(this.location);
+    console.debug(tmpWifiLOcationObject['location']);
+
+    // Use Stuttgart Maps calculator service
+    let distanceBeeline = this.stuttgartMapsCoordinatesCalculator.calculateDistanceBetweenGeolocations(this.location, tmpWifiLOcationObject['location']);
+
+    // DEBUG
+    console.debug(distanceBeeline);
+    // DEBUG
+
+    // Merge route distance beeline into tmp collection
+    (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], {'route': {'distance-beeline': distanceBeeline}});
+
+    // Trigger wifi location model changed event
+    this.events.publish('wifi-location-model:changed', wifiLocationId);
   }
 
   /**
@@ -163,9 +195,12 @@ export class Page1 {
 
   /**
    * Method is used to apply a new given location
-   * @param location
+   * @param eventArgs
    */
-  applyLocation(location: Object) {
+  applyLocation(eventArgs: Array): void {
+
+    // Extract location from event args
+    let location = eventArgs[0];
 
     // Remember new location in model variable
     this.location = location;
