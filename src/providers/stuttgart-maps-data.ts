@@ -63,6 +63,15 @@ export class StuttgartMapsData {
   }
 
   /**
+   * TODO: Method retrieves wifi location details from Stuttgart Maps server
+   * @param itemId
+   */
+  getWifiLocationDetails(itemId: Number): String {
+
+    return "Details";
+  }
+
+  /**
    * Method extracts wifi locations from received api response
    * @param response
    * @type Array
