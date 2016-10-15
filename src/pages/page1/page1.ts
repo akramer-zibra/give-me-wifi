@@ -28,6 +28,7 @@ export class Page1 {
    */
   private wifiLocations: Object = {};
 
+  //noinspection TsLint
   /**
    * Constructor method
    *
@@ -186,10 +187,7 @@ export class Page1 {
    */
   applyLocation(eventArgs: Array): void {
 
-    // Extract location from event args
-    let location = eventArgs[0];
-
     // Remember new location in model variable
-    this.location = location;
+    this.location = eventArgs[0];
   }
 }
