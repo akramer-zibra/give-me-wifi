@@ -110,7 +110,7 @@ export class Page1 {
       // Iterate retrieved wifi location
       for(let wifiLocationId in wifiLocations) {
 
-        // FIXME: trigger details retrieve differently
+        // Trigger details retrieve differently
         this.events.publish('wifi-location:retrieved', wifiLocationId);
       }
     });
@@ -150,15 +150,8 @@ export class Page1 {
     // Use data from temporary object
     let tmpWifiLOcationObject = this.tmpWifiLocations[wifiLocationId];
 
-    console.debug(this.location);
-    console.debug(tmpWifiLOcationObject['location']);
-
     // Use Stuttgart Maps calculator service
     let distanceBeeline = this.stuttgartMapsCoordinatesCalculator.calculateDistanceBetweenGeolocations(this.location, tmpWifiLOcationObject['location']);
-
-    // DEBUG
-    console.debug(distanceBeeline);
-    // DEBUG
 
     // Merge route distance beeline into tmp collection
     (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], {'route': {'distance-beeline': distanceBeeline}});
@@ -186,7 +179,9 @@ export class Page1 {
 
     // Check completion criterias
     if(tmpWifiLocationObject.hasOwnProperty('details')
-        && tmpWifiLocationObject['details'].hasOwnProperty('name')) {
+        && tmpWifiLocationObject['details'].hasOwnProperty('name')
+        && tmpWifiLocationObject.hasOwnProperty('route')
+        && tmpWifiLocationObject['route'].hasOwnProperty('distance-beeline')) {
 
       // Copy WifiLocation object from tmp to model variable
       this.wifiLocations[wifiLocationId] = tmpWifiLocationObject;
