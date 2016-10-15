@@ -20,7 +20,30 @@ export class ValuesPipe implements PipeTransform {
       dataArr.push(value[key]);
     });
 
+    /*
+     * Sort array objects if first arg is "sort"
+     */
+    if(args && args.indexOf("sort") > -1) {
+
+      // Sort "hardcoded" by distance-beeline
+      dataArr.sort((a: Object, b: Object): number => {
+        return a['route']['distance-beeline'] > b['route']['distance-beeline'] ? 1 : -1;
+      });
+    }
+
     // return the resulting array
     return dataArr;
+  }
+
+  /**
+   * Helper method extracts sort by criteria from string
+   * @param argument
+   */
+  private extractSortByCriteria(argument: String): String {
+
+    let start = argument.indexOf("(");
+    let end = argument.indexOf(")");
+
+    return argument.substr(start, end);
   }
 }
