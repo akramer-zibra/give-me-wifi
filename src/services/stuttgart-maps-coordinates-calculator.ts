@@ -4,12 +4,6 @@ import {Injectable} from "@angular/core";
 export class StuttgartMapsCoordinatesCalculator {
 
   /**
-   * Defines how many kilometers are represented in one point
-   * @type {number}
-   */
-  private pointKilometer: Number = 0.00100948;
-
-  /**
    * Defines how many coordinate points equas to one degree in geolocaion scale
    * @type {number}
    */
@@ -31,42 +25,6 @@ export class StuttgartMapsCoordinatesCalculator {
   private schlossplatzCoordinates: Object = {
     'x': 3513294,
     'y': 5404578
-  }
-
-  /**
-   * Geolocation of Stuttgart Marktplatz
-   * @type {{lat: string; lng: string}}
-   */
-  private marktplatzGeolocation: Object = {
-    'lat': '48.77527685',
-    'lng': '9.17829394'
-  }
-
-  /**
-   * Point coordinates of STuttgart Marktplatz
-   * @type {{x: number; y: number}}
-   */
-  private marktplatzCoordinates: Object = {
-    'x': 3513184,
-    'y': 5404218
-  }
-
-  /**
-   * Geolocation of Stuttgart Hauptbahnhofturm
-   * @type {{lat: string; lng: string}}
-   */
-  private touristinfoGeolocation: Object = {
-    'lat': '',
-    'lng': ''
-  }
-
-  /**
-   * Point Coordinates of Stuttgarr Tourist Information
-   * @type {{x: number; y: number}}
-   */
-  private touristinfoCoordinates: Object = {
-    'x': 3513459,
-    'y': 5404998
   }
 
   /**
