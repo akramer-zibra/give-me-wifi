@@ -137,10 +137,10 @@ export class Page1 {
     let wifiLocationId: Number = eventArgs[0];
 
     // Use data from temporary object
-    let tmpWifiLOcationObject = this.tmpWifiLocations[wifiLocationId];
+    let tmpWifiLocationObject = this.tmpWifiLocations[wifiLocationId];
 
     // Use Stuttgart Maps calculator service
-    let distanceBeeline = this.stuttgartMapsCalculator.calculateDistanceBetweenGeolocations(this.location, tmpWifiLOcationObject['location']);
+    let distanceBeeline = this.stuttgartMapsCalculator.calculateDistanceBetweenGeolocations(this.location, tmpWifiLocationObject['location']);
 
     // Merge route distance beeline into tmp collection
     (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], {'route': {'distance-beeline': distanceBeeline}});
