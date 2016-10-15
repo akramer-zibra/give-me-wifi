@@ -1,11 +1,14 @@
-import {Component} from "@angular/core";
+import {Component, ChangeDetectorRef} from "@angular/core";
 import {NavController, Events} from "ionic-angular";
 import {Geolocation} from "ionic-native";
 import {StuttgartMapsData} from "../../providers/stuttgart-maps-data";
+import {ValuesPipe} from "../../pipes/values";
+import {CompletePipe} from "../../pipes/complete";
 
 @Component({
   selector: 'page-page1',
-  templateUrl: 'page1.html'
+  templateUrl: 'page1.html',
+  pipes: [CompletePipe, ValuesPipe]
 })
 export class Page1 {
 
@@ -15,9 +18,15 @@ export class Page1 {
   private location: Object = null;
 
   /**
+   * This is a collection for temporary data which is not complete yet
+   * @type {{}}
+   */
+  private tmpWifiLocations: Object = {};
+
+  /**
    * Model collection variable with wifi locations
    */
-  private wifiLocations: Array = [];
+  private wifiLocations: Object = {};
 
   /**
    * Constructor method
@@ -28,12 +37,16 @@ export class Page1 {
    */
   constructor(public navCtrl: NavController,
               private events: Events,
+              private changeDetectorRef: ChangeDetectorRef,
               private stuttgartMapsData: StuttgartMapsData) {
 
     // Configure event listeners
     events.subscribe("location:retrieved", this.applyLocation.bind(this));
     events.subscribe("location:retrieved", this.retrieveWifiLocations.bind(this));
     events.subscribe("wifi-location:retrieved", this.retrieveWifiLocationDetails.bind(this));
+
+    // Listen to Model changes and then mark this component for change detection
+//    events.subscribe("page1-model:changed", changeDetectorRef.markForCheck);
   }
 
   /**
@@ -53,10 +66,10 @@ export class Page1 {
         "lat": position.coords.latitude,
         "lng": position.coords.longitude,
         "timestamp": position.timestamp
-      }
+      };
 
       // DEBUG
-      console.debug(position);
+      console.debug(<any>position);
       // DEBUG
 
       // Trigger event location retrieved
@@ -82,18 +95,13 @@ export class Page1 {
     //
     let geolocation = eventArgs[0];
 
-    // DEBUG
-    console.debug("Call: retrieveWifiLocations");
-    console.debug(geolocation);
-    // DEBUG
-
     // Use data provider to retrieve Wifi locations
     // NOTICE: Returns an Observable
     this.stuttgartMapsData.retrieveWifiLocations(geolocation)
                           .subscribe((wifiLocations) => {
 
       // Store Wifi locations into model variable
-      this.wifiLocations = wifiLocations;
+      this.tmpWifiLocations = wifiLocations;
 
       // DEBUG
       console.debug(wifiLocations);
@@ -105,11 +113,6 @@ export class Page1 {
         // FIXME: trigger details retrieve differently
         this.events.publish('wifi-location:retrieved', wifiLocationId);
       }
-
-      // DEBUG
-      console.debug("Event: retrieveWifiLocations");
-      console.debug(wifiLocations);
-      // DEBUG
     });
   }
 
@@ -122,21 +125,13 @@ export class Page1 {
     // Get wifi location from event args
     let wifiLocationId: Number = eventArgs[0];
 
-    // DEBUG
-    console.debug('Call: retrieveWifiLocationDetails');
-    console.debug(wifiLocationId);
-    // DEBUG
-
     // Use stuttgart maps data provider ro retrieve wifi location details
     this.stuttgartMapsData.retrieveWifiLocationDetails(wifiLocationId)
                           .subscribe((wifiLocationDetails) => {
 
       // Merge details in wifiLocations model variable
-      Object.assign(this.wifiLocations[wifiLocationId], wifiLocationDetails);
-
-      // DEBUG
-      console.debug(this.wifiLocations);
-      // DEBUG
+      // @see http://stackoverflow.com/a/38860354/2145395
+      this.wifiLocations[wifiLocationId] = (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], wifiLocationDetails);
     });
   }
 
