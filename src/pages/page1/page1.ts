@@ -20,7 +20,7 @@ export class Page1 {
   /**
    * Model collection variable with wifi locations
    */
-  private wifiLocations: Array;
+  private wifiLocations: Array = [];
 
   /**
    * Constructor method
@@ -114,24 +114,5 @@ export class Page1 {
     console.debug("Call: applyLocation");
     console.debug(location);
     // DEBUG
-  }
-
-  /**
-   * Method returns if device has been located and a location is known
-   * @return {boolean}
-   */
-  hasLocation() {
-
-    return (this.location != null);
-  }
-
-  /**
-   * Method returns TRUE if locarion of this device is unknown, and FALSE if its known
-   * @return {boolean}
-   */
-  unknownLocation() {
-
-    // Check if location is known
-    return !this.hasLocation();
   }
 }

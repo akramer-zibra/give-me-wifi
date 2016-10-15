@@ -16,7 +16,7 @@
 <ion-content padding>
   <p>Die nächsten Stuttgarter Wifi Spots in deiner Nähe sind...</p>
 
-  <p *ngIf="unknownLocation">
+  <p *ngIf="!location">
     Dein Standort ist nicht bekannt, sorry!
   </p>
 
