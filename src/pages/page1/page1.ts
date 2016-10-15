@@ -69,18 +69,10 @@ export class Page1 {
         "timestamp": position.timestamp
       };
 
-      // DEBUG
-      console.debug(<any>position);
-      // DEBUG
-
       // Trigger event location retrieved
       this.events.publish("location:retrieved", location);
 
     }, (err) => {
-
-      // DEBUG
-      console.log(err);
-      // DEBUG
 
       // Trigger error event in case of an error
       this.events.publish("error", err);
