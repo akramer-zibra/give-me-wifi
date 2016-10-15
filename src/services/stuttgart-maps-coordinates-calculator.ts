@@ -85,14 +85,19 @@ export class StuttgartMapsCoordinatesCalculator {
 
   /**
    * Method calculates distance between two geolocations
-   * @param lat1
-   * @param lng1
-   * @param lat2
-   * @param lng2
+   * @param location
+   * @param destination
    * @return {number}
    * @see http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
    */
-  calculateDistanceBetweenGeolocations(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  calculateDistanceBetweenGeolocations(location: Object, destination: Object): number {
+
+    let lat1 = location['lat'];
+    let lng1 = location['lng'];
+
+    let lat2 = destination['lat'];
+    let lng2 = destination['lng'];
+
     var deg2Rad = deg => {
       return deg * Math.PI / 180;
     }
