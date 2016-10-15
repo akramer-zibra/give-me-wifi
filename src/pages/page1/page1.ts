@@ -44,6 +44,7 @@ export class Page1 {
     events.subscribe("location:retrieved", this.applyLocation.bind(this));
     events.subscribe("location:retrieved", this.retrieveWifiLocations.bind(this));
     events.subscribe("wifi-location:retrieved", this.retrieveWifiLocationDetails.bind(this));
+    events.subscribe("wifi-location-model:changed", this.completeCheckWifiLocation.bind(this));
 
     // Listen to Model changes and then mark this component for change detection
 //    events.subscribe("page1-model:changed", changeDetectorRef.markForCheck);
@@ -103,9 +104,8 @@ export class Page1 {
       // Store Wifi locations into model variable
       this.tmpWifiLocations = wifiLocations;
 
-      // DEBUG
-      console.debug(wifiLocations);
-      // DEBUG
+      // Trigger wifi location model changed event
+      this.events.publish('wifi-location-model:changed', wifiLocationId);
 
       // Iterate retrieved wifi location
       for(let wifiLocationId in wifiLocations) {
@@ -129,10 +129,39 @@ export class Page1 {
     this.stuttgartMapsData.retrieveWifiLocationDetails(wifiLocationId)
                           .subscribe((wifiLocationDetails) => {
 
-      // Merge details in wifiLocations model variable
-      // @see http://stackoverflow.com/a/38860354/2145395
-      this.wifiLocations[wifiLocationId] = (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], wifiLocationDetails);
+                            // Merge details in wifiLocations model variable
+                            // @see http://stackoverflow.com/a/38860354/2145395
+                            this.wifiLocations[wifiLocationId] = (<any>Object).assign(this.tmpWifiLocations[wifiLocationId], wifiLocationDetails);
+
+                            // Trigger wifi location model changed event
+                            this.events.publish('wifi-location-model:changed', wifiLocationId);
     });
+  }
+
+  /**
+   * Method checks if specified wifi location is data complete for displaying
+   * @param eventArgs
+   */
+  completeCheckWifiLocation(eventArgs: Array): void {
+
+    // Get wifi location from event args
+    let wifiLocationId: Number = eventArgs[0];
+
+    // Try to find specified
+    if(!this.tmpWifiLocations.hasOwnProperty(wifiLocationId)) {
+      return;
+    }
+
+    //
+    let tmpWifiLocationObject = this.tmpWifiLocations[wifiLocationId];
+
+    // Check completion criterias
+    if(tmpWifiLocationObject.hasOwnProperty('details')
+        && tmpWifiLocationObject['details'].hasOwnProperty('name')) {
+
+      // Copy WifiLocation object from tmp to model variable
+      this.wifiLocations[wifiLocationId] = tmpWifiLocationObject;
+    }
   }
 
   /**
